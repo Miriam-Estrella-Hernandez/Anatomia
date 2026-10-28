@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-amber-50/30">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomía Interactiva del Hombro - CUTonalá UdeG</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        udg: {
+                            gold: '#C59B27',
+                            darkGold: '#9A7718',
+                            brown: '#4A3525',
+                            darkBrown: '#2D1F16',
+                            beige: '#F5EFE6',
+                            lightBeige: '#FAF7F2',
+                            accent: '#8B0000', // Red/burgundy for muscles
+                            accentLight: '#A52A2A',
+                            softBg: '#F3EDE2'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #2D1F16;
+        }
+        .font-serif-udg {
+            font-family: 'Cinzel', serif;
+        }
+        
+        /* Interactive SVG styling */
+        .bone-zone {
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+        .bone-zone:hover {
+            fill-opacity: 0.85;
+            stroke-width: 3;
+            filter: drop-shadow(0 0 6px rgba(197, 155, 39, 0.6));
+        }
+        
+        .muscle-target {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            opacity: 0.25;
+        }
+        .muscle-target:hover {
+            opacity: 0.6;
+        }
+        .muscle-target.active {
+            opacity: 0.85;
+            stroke-width: 2.5;
+            animation: pulse-muscle 2s infinite alternate;
+        }
+        
+        @keyframes pulse-muscle {
+            from { fill-opacity: 0.7; }
+            to { fill-opacity: 0.95; }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F5EFE6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C59B27;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9A7718;
+        }
+    </style>
+</head>
+<body class="min-h-full flex flex-col bg-udg-lightBeige selection:bg-udg-gold selection:text-white">
+
+    <!-- HEADER INSTITUCIONAL -->
+    <header class="bg-gradient-to-r from-udg-darkBrown via-udg-brown to-udg-darkBrown text-white border-b-4 border-udg-gold shadow-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                
+                <!-- Logo & Titulo -->
+                <div class="flex items-center gap-4 text-center md:text-left">
+                    <div class="w-14 h-14 rounded-full bg-white/10 border-2 border-udg-gold flex items-center justify-center p-2 shadow-inner shrink-0">
+                        <i class="fa-solid font-bold text-2xl text-udg-gold fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase tracking-widest text-udg-gold font-semibold">Universidad de Guadalajara • CUTonalá</div>
+                        <h1 class="text-xl sm:text-2xl font-serif-udg font-bold tracking-tight text-white">Anatomía Interactiva del Hombro</h1>
+                        <p class="text-xs text-amber-100/80">Músculos, Biomecánica y Manguito Rotador</p>
+                    </div>
+                </div>
+
+                <!-- Creditos de la Presentacion -->
+                <div class="bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 text-xs text-amber-100/90 shadow-sm text-center md:text-right">
+                    <p><span class="text-udg-gold font-semibold">Presentado por:</span> González Cortés Itzel Julissa</p>
+                    <p><span class="text-udg-gold font-semibold">Docente:</span> Dr. Víctor Manuel Hernández Martínez</p>
+                    <p class="text-[10px] text-amber-200/70 mt-0.5">Anatomía Humana y Disecciones</p>
+                </div>
+            </div>
+
+            <!-- Navegación de Pestañas -->
+            <nav class="flex flex-wrap justify-center md:justify-start gap-2 mt-4 pt-3 border-t border-white/10 text-xs sm:text-sm">
+                <button onclick="switchTab('modulo1')" id="tab-modulo1" class="tab-btn px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 bg-udg-gold text-udg-darkBrown shadow-md font-semibold">
+                    <i class="fa-solid fa-bone"></i> 1. Ensamblado Óseo (SVG)
+                </button>
+                <button onclick="switchTab('modulo2')" id="tab-modulo2" class="tab-btn px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 hover:bg-white/10 text-amber-100">
+                    <i class="fa-solid fa-dumbbell"></i> 2. Simulador de Inserción
+                </button>
+                <button onclick="switchTab('modulo3')" id="tab-modulo3" class="tab-btn px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 hover:bg-white/10 text-amber-100">
+                    <i class="fa-solid fa-user-doctor"></i> 3. Casos Clínicos & Trivia
+                </button>
+                <button onclick="switchTab('modulo4')" id="tab-modulo4" class="tab-btn px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 hover:bg-white/10 text-amber-100">
+                    <i class="fa-solid fa-book-atlas"></i> 4. Atlas & Tabla Anatómica
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ================= MÓDULO 1: ENSAMBLADO ÓSEO Y SVG INTERACTIVO ================= -->
+        <section id="modulo1" class="tab-content space-y-6">
+            <div class="bg-white rounded-2xl shadow-lg border border-udg-gold/20 p-6">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6 pb-4 border-b border-udg-brown/10">
+                    <div>
+                        <h2 class="text-2xl font-serif-udg font-bold text-udg-darkBrown flex items-center gap-3">
+                            <i class="fa-solid fa-skeleton text-udg-gold"></i>
+                            Estructura Ósea del Hombro
+                        </h2>
+                        <p class="text-sm text-gray-600 mt-1">Haz clic en los puntos interactivos del hueso o en los botones para explorar los accidentes anatómicos de la escápula, clavícula y húmero.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="setBoneView('anterior')" id="btn-view-ant" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-udg-brown text-white shadow-sm hover:bg-udg-darkBrown transition">
+                            Vista Anterior
+                        </button>
+                        <button onclick="setBoneView('posterior')" id="btn-view-post" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-udg-beige text-udg-darkBrown border border-udg-gold/40 hover:bg-udg-gold/20 transition">
+                            Vista Posterior
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <!-- SVG Interactivo del Hombro -->
+                    <div class="lg:col-span-7 bg-udg-softBg rounded-2xl p-4 border border-udg-gold/30 shadow-inner flex flex-col items-center justify-center relative min-h-[460px]">
+                        
+                        <div class="absolute top-3 left-3 bg-white/80 backdrop-blur px-3 py-1 rounded-md text-xs font-semibold text-udg-darkBrown border border-udg-gold/20 shadow-sm" id="view-indicator">
+                            <i class="fa-solid fa-eye text-udg-gold mr-1"></i> Vista Anterior (Derecha)
+                        </div>
+
+                        <!-- Canvas SVG -->
+                        <svg id="shoulder-svg" viewBox="0 0 500 500" class="w-full h-auto max-w-[480px] filter drop-shadow-md">
+                            <defs>
+                                <linearGradient id="boneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#EFE6D5" />
+                                    <stop offset="50%" stop-color="#E2D4B9" />
+                                    <stop offset="100%" stop-color="#CBB591" />
+                                </linearGradient>
+                                <linearGradient id="jointGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#D0E8F2" />
+                                    <stop offset="100%" stop-color="#A2C4D6" />
+                                </linearGradient>
+                            </defs>
+
+                            <!-- Grupo Escápula -->
+                            <g id="svg-scapula">
+                                <!-- Cuerpo Escápula (Anterior/Fosa Subescapular) -->
+                                <path id="path-scapula-body" d="M 170 160 L 260 170 C 270 200, 260 300, 220 360 C 200 330, 165 240, 170 160 Z" fill="url(#boneGrad)" stroke="#8A7356" stroke-width="2"/>
+                                <!-- Cavidad Glenoidea -->
+                                <ellipse id="path-glenoid" cx="265" cy="180" rx="10" ry="18" fill="url(#jointGrad)" stroke="#607D8B" stroke-width="2"/>
+                                <!-- Proceso Coracoides -->
+                                <path id="path-coracoid" d="M 245 155 Q 240 135 220 140 Q 215 145 225 150 Z" fill="#D8C8A8" stroke="#8A7356" stroke-width="2"/>
+                                <!-- Acromion -->
+                                <path id="path-acromion" d="M 265 145 Q 280 135 250 120 Q 235 125 245 145 Z" fill="#DFCFA8" stroke="#8A7356" stroke-width="2"/>
+                            </g>
+
+                            <!-- Grupo Clavícula -->
+                            <g id="svg-clavicle">
+                                <path id="path-clavicle" d="M 100 115 Q 180 100 248 123 Q 252 130 240 132 Q 170 115 100 125 Z" fill="url(#boneGrad)" stroke="#8A7356" stroke-width="2"/>
+                            </g>
+
+                            <!-- Grupo Húmero -->
+                            <g id="svg-humerus">
+                                <!-- Cabeza Humeral -->
+                                <path id="path-humeral-head" d="M 270 165 Q 295 160 305 185 Q 285 200 270 185 Z" fill="url(#jointGrad)" stroke="#607D8B" stroke-width="1.5"/>
+                                <!-- Tubérculo Mayor -->
+                                <path id="path-greater-tubercle" d="M 305 180 C 315 185, 320 200, 310 210 L 295 200 Z" fill="#D5C29D" stroke="#8A7356" stroke-width="1.5"/>
+                                <!-- Tubérculo Menor -->
+                                <ellipse id="path-lesser-tubercle" cx="285" cy="195" rx="7" ry="9" fill="#D0BD96" stroke="#8A7356" stroke-width="1.5"/>
+                                <!-- Diáfisis Humeral -->
+                                <path id="path-humerus-shaft" d="M 280 205 L 310 210 L 325 380 Q 300 390 285 380 Z" fill="url(#boneGrad)" stroke="#8A7356" stroke-width="2"/>
+                                <!-- Corredera Bicipital / Surco Intertubercular -->
+                                <path id="path-bicipital-groove" d="M 292 195 L 297 230" stroke="#7A6246" stroke-width="3" stroke-dasharray="2,2"/>
+                                <!-- Tuberosidad Deltoidea -->
+                                <path id="path-deltoid-tuberosity" d="M 312 280 C 322 290, 318 305, 310 310" stroke="#90734E" stroke-width="4" fill="none"/>
+                            </g>
+
+                            <!-- HOTSPOTS INTERACTIVOS (Puntos de Inserción/Accidentes) -->
+                            <g id="svg-hotspots">
+                                <!-- Acromion -->
+                                <circle class="bone-zone" onclick="showBoneInfo('acromion')" cx="255" cy="132" r="9" fill="#C59B27" stroke="#FFF" stroke-width="2"/>
+                                <!-- Proceso Coracoides -->
+                                <circle class="bone-zone" onclick="showBoneInfo('coracoid')" cx="228" cy="143" r="9" fill="#C59B27" stroke="#FFF" stroke-width="2"/>
+                                <!-- Fosa Subescapular / Supra / Infra -->
+                                <circle class="bone-zone" onclick="showBoneInfo('fosa_main')" cx="210" cy="230" r="11" fill="#8B0000" stroke="#FFF" stroke-width="2"/>
+                                <!-- Tubérculo Mayor -->
+                                <circle class="bone-zone" onclick="showBoneInfo('tubercle_greater')" cx="312" cy="192" r="9" fill="#C59B27" stroke="#FFF" stroke-width="2"/>
+                                <!-- Tubérculo Menor -->
+                                <circle class="bone-zone" onclick="showBoneInfo('tubercle_lesser')" cx="285" cy="195" r="8" fill="#C59B27" stroke="#FFF" stroke-width="2"/>
+                                <!-- Surco Intertubercular -->
+                                <circle class="bone-zone" onclick="showBoneInfo('bicipital_groove')" cx="295" cy="215" r="8" fill="#4A3525" stroke="#FFF" stroke-width="2"/>
+                                <!-- Tubérculo Supraglenoideo -->
+                                <circle class="bone-zone" onclick="showBoneInfo('supra_glenoid')" cx="262" cy="160" r="7" fill="#2563EB" stroke="#FFF" stroke-width="2"/>
+                                <!-- Tubérculo Infraglenoideo -->
+                                <circle class="bone-zone" onclick="showBoneInfo('infra_glenoid')" cx="265" cy="205" r="7" fill="#2563EB" stroke="#FFF" stroke-width="2"/>
+                                <!-- Tuberosidad Deltoidea -->
+                                <circle class="bone-zone" onclick="showBoneInfo('deltoid_tub')" cx="314" cy="295" r="8" fill="#C59B27" stroke="#FFF" stroke-width="2"/>
+                            </g>
+                        </svg>
+
+                        <div class="text-[11px] text-gray-500 mt-2 text-center">
+                            💡 Pasa el cursor o toca las marcas de colores (<span class="inline-block w-2.5 h-2.5 rounded-full bg-udg-gold"></span> <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-800"></span> <span class="inline-block w-2.5 h-2.5 rounded-full bg-blue-600"></span>) para estudiar los detalles anatómicos.
+                        </div>
+                    </div>
+
+                    <!-- Panel Informativo del Hueso Seleccionado -->
+                    <div class="lg:col-span-5 bg-udg-beige/50 rounded-2xl p-5 border border-udg-gold/30 flex flex-col justify-between min-h-[460px]">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-udg-gold/20 text-udg-darkBrown text-xs font-semibold mb-3">
+                                <i class="fa-solid fa-microscope text-udg-gold"></i> Detalle Estructural
+                            </div>
+                            <h3 id="bone-title" class="text-xl font-serif-udg font-bold text-udg-darkBrown">Selecciona un punto anatómico</h3>
+                            <p id="bone-desc" class="text-sm text-gray-700 mt-2 leading-relaxed">
+                                Haz clic sobre cualquier punto de la articulación del hombro para desplegar los detalles de origen, inserción y referencias clave según la presentación anatómica del CUTonalá.
+                            </p>
+
+                            <!-- Lista de Referencias Rápidas -->
+                            <div id="bone-highlights" class="mt-4 space-y-2 hidden">
+                                <div class="bg-white p-3 rounded-xl border border-udg-gold/20 shadow-sm text-xs">
+                                    <span class="font-bold text-udg-brown block mb-1">📌 Importancia Clínica / Anatómica:</span>
+                                    <p id="bone-clinical" class="text-gray-600"></p>
+                                </div>
+                                <div class="bg-white p-3 rounded-xl border border-udg-gold/20 shadow-sm text-xs">
+                                    <span class="font-bold text-udg-brown block mb-1">💪 Músculos / Tendones Asociados:</span>
+                                    <p id="bone-muscles" class="text-gray-600"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selector rápido de Accidentes -->
+                        <div class="mt-6 pt-4 border-t border-udg-brown/10">
+                            <span class="text-xs font-semibold text-udg-darkBrown block mb-2">Accidentes Destacados:</span>
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="showBoneInfo('fosa_main')" class="px-2.5 py-1 rounded bg-white text-xs hover:bg-udg-gold hover:text-white transition shadow-sm border border-udg-brown/10">Fosas Escapulares</button>
+                                <button onclick="showBoneInfo('tubercle_greater')" class="px-2.5 py-1 rounded bg-white text-xs hover:bg-udg-gold hover:text-white transition shadow-sm border border-udg-brown/10">Tubérculo Mayor</button>
+                                <button onclick="showBoneInfo('tubercle_lesser')" class="px-2.5 py-1 rounded bg-white text-xs hover:bg-udg-gold hover:text-white transition shadow-sm border border-udg-brown/10">Tubérculo Menor</button>
+                                <button onclick="showBoneInfo('acromion')" class="px-2.5 py-1 rounded bg-white text-xs hover:bg-udg-gold hover:text-white transition shadow-sm border border-udg-brown/10">Acromion y Coracoides</button>
+                                <button onclick="showBoneInfo('supra_glenoid')" class="px-2.5 py-1 rounded bg-white text-xs hover:bg-udg-gold hover:text-white transition shadow-sm border border-udg-brown/10">Tubérculos Glenoideos</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MÓDULO 2: SIMULADOR INTERACTIVO DE INSERCIÓN MUSCULAR ================= -->
+        <section id="modulo2" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl shadow-lg border border-udg-gold/20 p-6">
+                
+                <!-- Encabezado del Desafío -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gradient-to-r from-udg-beige via-amber-50 to-udg-beige p-4 rounded-xl border border-udg-gold/30">
+                    <div>
+                        <span class="text-xs font-bold text-udg-gold uppercase tracking-wider">Simulador de Inserción Muscular</span>
+                        <h2 class="text-xl font-serif-udg font-bold text-udg-darkBrown">
+                            Objetivo: <span id="target-muscle-name" class="text-udg-accent underline decoration-udg-gold">Cargando...</span>
+                        </h2>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="text-right">
+                            <span class="text-xs text-gray-500 block">Puntuación</span>
+                            <span id="sim-score" class="text-lg font-bold text-udg-darkBrown">0 / 0 pts</span>
+                        </div>
+                        <button onclick="nextMuscleChallenge()" class="px-4 py-2 bg-udg-gold hover:bg-udg-darkGold text-udg-darkBrown font-bold rounded-lg shadow transition text-xs flex items-center gap-2">
+                            Siguiente <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-6">
+                    
+                    <!-- Paleta de Músculos (Opciones para Seleccionar) -->
+                    <div class="lg:col-span-4 space-y-3">
+                        <h3 class="text-sm font-bold text-udg-darkBrown flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-udg-gold"></i>
+                            Selecciona el músculo a insertar:
+                        </h3>
+                        <div id="muscle-palette" class="space-y-2 max-h-[480px] overflow-y-auto pr-2">
+                            <!-- Los botones se generan dinámicamente -->
+                        </div>
+                    </div>
+
+                    <!-- Canvas de Colocación Ósea -->
+                    <div class="lg:col-span-8 bg-udg-softBg rounded-2xl p-4 border border-udg-gold/30 shadow-inner flex flex-col items-center justify-center relative">
+                        
+                        <div class="w-full flex justify-between items-center mb-2 px-2">
+                            <span class="text-xs font-semibold text-udg-brown"><i class="fa-solid fa-hand-pointer text-udg-gold"></i> Haz clic en el músculo correcto</span>
+                            <span class="text-[11px] text-gray-500">Manguito Rotador & Toracoapendiculares</span>
+                        </div>
+
+                        <!-- Canvas Diagrama interactivo de inserciones -->
+                        <svg id="sim-svg" viewBox="0 0 500 450" class="w-full h-auto max-w-[500px]">
+                            <!-- Fondo Óseo de referencia -->
+                            <path d="M 170 140 L 260 150 C 270 180, 260 280, 220 340 C 200 310, 165 220, 170 140 Z" fill="#E2D4B9" stroke="#A89270" stroke-width="2"/>
+                            <path d="M 100 95 Q 180 80 248 103 Q 252 110 240 112 Q 170 95 100 105 Z" fill="#E2D4B9" stroke="#A89270" stroke-width="2"/>
+                            <ellipse cx="265" cy="160" rx="10" ry="18" fill="#A2C4D6" stroke="#607D8B" stroke-width="1.5"/>
+                            <path d="M 270 145 Q 295 140 305 165 L 325 360 Q 300 370 285 360 L 270 165 Z" fill="#E2D4B9" stroke="#A89270" stroke-width="2"/>
+
+                            <!-- MÚSCULOS INTERACTIVOS (CAPAS SVG CLICABLES) -->
+                            <!-- Supraespinoso -->
+                            <path id="sim-m-supraespinoso" onclick="userSelectMuscle('supraespinoso')" class="muscle-target" d="M 175 120 L 250 125 L 305 150 L 295 160 L 240 135 Z" fill="#B91C1C" stroke="#7F1D1D" stroke-width="1.5">
+                                <title>Zona Supraespinosa</title>
+                            </path>
+                            <!-- Infraespinoso -->
+                            <path id="sim-m-infraespinoso" onclick="userSelectMuscle('infraespinoso')" class="muscle-target" d="M 180 160 L 255 170 L 308 175 L 295 200 L 210 260 Z" fill="#C2410C" stroke="#7C2D12" stroke-width="1.5">
+                                <title>Zona Infraespinosa</title>
+                            </path>
+                            <!-- Redondo Menor -->
+                            <path id="sim-m-redondo_menor" onclick="userSelectMuscle('redondo_menor')" class="muscle-target" d="M 215 265 L 255 240 L 305 205 L 290 220 Z" fill="#EA580C" stroke="#7C2D12" stroke-width="1.5">
+                                <title>Zona Redondo Menor</title>
+                            </path>
+                            <!-- Subescapular -->
+                            <path id="sim-m-subescapular" onclick="userSelectMuscle('subescapular')" class="muscle-target" d="M 180 155 L 250 165 L 285 190 L 275 210 L 210 300 Z" fill="#991B1B" stroke="#450A0A" stroke-width="1.5">
+                                <title>Cara Costal Subescapular</title>
+                            </path>
+                            <!-- Redondo Mayor -->
+                            <path id="sim-m-redondo_mayor" onclick="userSelectMuscle('redondo_mayor')" class="muscle-target" d="M 220 310 L 255 270 L 295 230 L 285 250 L 210 330 Z" fill="#D97706" stroke="#78350F" stroke-width="1.5">
+                                <title>Zona Redondo Mayor</title>
+                            </path>
+                            <!-- Deltoides -->
+                            <path id="sim-m-deltoides" onclick="userSelectMuscle('deltoides')" class="muscle-target" d="M 140 95 L 260 110 L 315 285 L 295 285 L 245 130 Z" fill="#DC2626" stroke="#991B1B" stroke-width="1.5">
+                                <title>Zona Deltoides</title>
+                            </path>
+                            <!-- Trapecio -->
+                            <path id="sim-m-trapecio" onclick="userSelectMuscle('trapecio')" class="muscle-target" d="M 100 50 L 220 100 L 170 115 L 80 110 Z" fill="#7C3AED" stroke="#4C1D95" stroke-width="1.5">
+                                <title>Zona Trapecio Superior/Medio</title>
+                            </path>
+                            <!-- Elevador de la Escápula -->
+                            <path id="sim-m-elevador_escapula" onclick="userSelectMuscle('elevador_escapula')" class="muscle-target" d="M 120 40 L 170 135 L 160 140 L 110 50 Z" fill="#059669" stroke="#064E3B" stroke-width="1.5">
+                                <title>Zona Elevador de la Escápula</title>
+                            </path>
+                            <!-- Dorsal Ancho -->
+                            <path id="sim-m-dorsal_ancho" onclick="userSelectMuscle('dorsal_ancho')" class="muscle-target" d="M 130 250 L 210 330 L 290 225 L 280 235 Z" fill="#0284C7" stroke="#075985" stroke-width="1.5">
+                                <title>Zona Inserción Dorsal Ancho</title>
+                            </path>
+                            <!-- Romboides (Mayor y Menor) -->
+                            <path id="sim-m-romboides" onclick="userSelectMuscle('romboides')" class="muscle-target" d="M 110 140 L 170 160 L 165 260 L 115 220 Z" fill="#D946EF" stroke="#701A75" stroke-width="1.5">
+                                <title>Borde Medial Escapular (Romboides)</title>
+                            </path>
+                        </svg>
+
+                        <!-- Modal / Feedback Pedagógico -->
+                        <div id="sim-feedback-modal" class="hidden absolute inset-4 bg-white/95 backdrop-blur-md rounded-xl p-5 border-2 border-udg-gold shadow-2xl flex flex-col justify-between z-20 animate-fade-in">
+                            <div>
+                                <div id="feedback-status-badge" class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-3">
+                                    <!-- Carga dinámicamente -->
+                                </div>
+                                <h3 id="feedback-title" class="text-lg font-serif-udg font-bold text-udg-darkBrown">---</h3>
+                                <p id="feedback-body" class="text-xs sm:text-sm text-gray-700 leading-relaxed mt-2">---</p>
+                                
+                                <div id="feedback-details" class="mt-3 p-3 bg-udg-beige/60 rounded-lg text-xs space-y-1 text-udg-darkBrown">
+                                    <p><strong>Origen:</strong> <span id="fb-origen"></span></p>
+                                    <p><strong>Inserción:</strong> <span id="fb-insercion"></span></p>
+                                    <p><strong>Inervación:</strong> <span id="fb-inervacion"></span></p>
+                                    <p><strong>Función:</strong> <span id="fb-funcion"></span></p>
+                                </div>
+                            </div>
+
+                            <button onclick="closeFeedbackModal()" class="w-full py-2.5 bg-udg-darkBrown text-white font-bold rounded-lg text-xs hover:bg-udg-brown transition mt-3">
+                                Entendido, continuar
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MÓDULO 3: CASOS CLÍNICOS Y TRIVIA ================= -->
+        <section id="modulo3" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl shadow-lg border border-udg-gold/20 p-6">
+                
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-udg-brown/10">
+                    <div>
+                        <h2 class="text-2xl font-serif-udg font-bold text-udg-darkBrown flex items-center gap-3">
+                            <i class="fa-solid fa-notes-medical text-udg-gold"></i>
+                            Exploración Física & Trivia Clínica
+                        </h2>
+                        <p class="text-sm text-gray-600 mt-1">Aplica los conceptos anatómicos extraídos de la presentación del CUTonalá en situaciones de diagnóstico clínico real.</p>
+                    </div>
+                    <div class="bg-udg-beige px-4 py-2 rounded-xl border border-udg-gold/30 text-xs font-bold text-udg-darkBrown">
+                        Aciertos Clínicos: <span id="quiz-score" class="text-udg-gold text-base">0</span> / <span id="quiz-total">0</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <!-- Tarjeta de Pregunta / Caso -->
+                    <div class="lg:col-span-8 space-y-4">
+                        <div class="bg-udg-lightBeige p-5 rounded-2xl border border-udg-gold/30 shadow-sm">
+                            <span class="px-2.5 py-1 bg-udg-gold/20 text-udg-darkBrown text-[11px] font-bold rounded-md uppercase tracking-wider mb-2 inline-block" id="quiz-category">
+                                Caso Clínico #1
+                            </span>
+                            <h3 id="quiz-question" class="text-base sm:text-lg font-semibold text-udg-darkBrown leading-snug">
+                                Cargando pregunta clínica...
+                            </h3>
+                        </div>
+
+                        <!-- Opciones de Respuesta -->
+                        <div id="quiz-options" class="space-y-2.5">
+                            <!-- Se generan dinámicamente -->
+                        </div>
+
+                        <!-- Retroalimentación Caso -->
+                        <div id="quiz-explanation" class="hidden p-4 rounded-xl border text-xs sm:text-sm leading-relaxed animate-fade-in">
+                            <!-- Carga explicacion -->
+                        </div>
+                    </div>
+
+                    <!-- Panel Lateral Informativo -->
+                    <div class="lg:col-span-4 bg-udg-beige/40 rounded-2xl p-5 border border-udg-gold/20 space-y-4">
+                        <h4 class="font-serif-udg font-bold text-udg-darkBrown text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-stethoscope text-udg-gold"></i>
+                            Maniobras de Exploración Frecuentes
+                        </h4>
+                        <ul class="text-xs space-y-2.5 text-gray-700">
+                            <li class="bg-white p-2.5 rounded-lg border border-udg-gold/20 shadow-xs">
+                                <strong>Infraespinoso:</strong> Codo flexionado a 90°, brazo aducido. Rotación lateral contra resistencia.
+                            </li>
+                            <li class="bg-white p-2.5 rounded-lg border border-udg-gold/20 shadow-xs">
+                                <strong>Redondo Mayor:</strong> Brazo en abducción, aducirlo contra resistencia. Palpable en pliegue posterior axilar.
+                            </li>
+                            <li class="bg-white p-2.5 rounded-lg border border-udg-gold/20 shadow-xs">
+                                <strong>Nervio Accesorio (XI):</strong> Su lesión causa caída del hombro e incapacidad para encogerlo (Trapecio).
+                            </li>
+                        </ul>
+                        <button onclick="loadNextQuizQuestion()" class="w-full py-2.5 bg-udg-gold hover:bg-udg-darkGold text-udg-darkBrown font-bold rounded-lg text-xs shadow transition">
+                            Siguiente Caso Clínico
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MÓDULO 4: ATLAS Y TABLA ANATÓMICA COMPRENSIVA ================= -->
+        <section id="modulo4" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl shadow-lg border border-udg-gold/20 p-6">
+                
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-udg-brown/10">
+                    <div>
+                        <h2 class="text-2xl font-serif-udg font-bold text-udg-darkBrown flex items-center gap-3">
+                            <i class="fa-solid fa-table-list text-udg-gold"></i>
+                            Tabla Anatómica de Músculos del Hombro
+                        </h2>
+                        <p class="text-sm text-gray-600 mt-1">Compendio completo de orígenes, inserciones, inervación y relevancia clínica del archivo académico.</p>
+                    </div>
+                    <!-- Buscador -->
+                    <div class="w-full sm:w-72 relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input type="text" id="atlas-search" oninput="filterAtlasTable()" placeholder="Buscar músculo o nervio..." class="w-full pl-9 pr-3 py-2 bg-udg-beige/50 rounded-lg text-xs border border-udg-gold/30 focus:outline-none focus:ring-2 focus:ring-udg-gold">
+                    </div>
+                </div>
+
+                <!-- Tabla de Contenido Anatómico -->
+                <div class="overflow-x-auto rounded-xl border border-udg-gold/20">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-udg-darkBrown text-white font-serif-udg">
+                                <th class="p-3 border-b border-udg-gold/30">Músculo</th>
+                                <th class="p-3 border-b border-udg-gold/30">Origen (Proximal)</th>
+                                <th class="p-3 border-b border-udg-gold/30">Inserción (Distal)</th>
+                                <th class="p-3 border-b border-udg-gold/30">Inervación</th>
+                                <th class="p-3 border-b border-udg-gold/30">Acción Principal</th>
+                                <th class="p-3 border-b border-udg-gold/30">Relevancia / Exploración</th>
+                            </tr>
+                        </thead>
+                        <tbody id="atlas-tbody" class="divide-y divide-gray-100 bg-white">
+                            <!-- Rellenado dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER INSTITUCIONAL -->
+    <footer class="bg-udg-darkBrown text-amber-100 text-xs border-t-2 border-udg-gold py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p class="font-serif-udg text-udg-gold font-bold">UNIVERSIDAD DE GUADALAJARA — CENTRO UNIVERSITARIO DE TONALÁ (CUTONALÁ)</p>
+            <p class="text-amber-200/70">Materia: Anatomía Humana y Disecciones • Presentado por González Cortés Itzel Julissa • Docente: Dr. Víctor Manuel Hernández Martínez</p>
+            <p class="text-[10px] text-amber-200/40">© 2026 Plataforma Interactiva de Educación Médica. Basado en Moore, Latarjet y Acland Anatomía.</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPT DE LÓGICA Y DATOS DE LA APLICACIÓN -->
+    <script>
+        // ================= BASE DE DATOS ANATÓMICA COMPLETA DE LA PRESENTACIÓN =================
+        const MUSCLE_DATA = {
+            supraespinoso: {
+                name: "Supraespinoso",
+                group: "Manguito Rotador",
+                origen: "Ocupa toda la fosa supraespinosa de la escápula.",
+                insercion: "Tubérculo mayor (tuberosidad mayor) del húmero.",
+                inervacion: "Nervio supraescapular.",
+                funcion: "Inicia la abducción del brazo (primeros 15°). Trabaja en conjunto con el deltoides.",
+                clinica: "Su tendón pasa bajo el acromion protegido por la bolsa subacromial; propenso a pinzamiento y tendinitis.",
+                isRotatorCuff: true
+            },
+            infraespinoso: {
+                name: "Infraespinoso",
+                group: "Manguito Rotador",
+                origen: "Ocupa la mayor parte de la fosa infraespinosa de la escápula.",
+                insercion: "Carilla media del tubérculo mayor del húmero.",
+                inervacion: "Nervio supraescapular.",
+                funcion: "Potente rotador lateral (externo) del brazo y estabilizador del hombro.",
+                clinica: "Se explora flexionando el codo a 90° y realizando rotación lateral contra resistencia.",
+                isRotatorCuff: true
+            },
+            redondo_menor: {
+                name: "Redondo Menor",
+                group: "Manguito Rotador",
+                origen: "Parte posterior del borde lateral de la escápula.",
+                insercion: "Carilla inferior del tubérculo mayor del húmero.",
+                inervacion: "Nervio axilar.",
+                funcion: "Rotación lateral (externa) del brazo y aducción secundaria.",
+                clinica: "Músculo estrecho oculto por el deltoides; se diferencia del infraespinoso por su inervación axilar.",
+                isRotatorCuff: true
+            },
+            subescapular: {
+                name: "Subescapular",
+                group: "Manguito Rotador",
+                origen: "Fosa subescapular (cara costal de la escápula).",
+                insercion: "Tubérculo menor del húmero.",
+                inervacion: "Nervios subescapulares superior e inferior.",
+                funcion: "Principal rotador medial (interno) del brazo y aductor.",
+                clinica: "Forma la pared posterior de la axila y cruza la cara anterior de la articulación.",
+                isRotatorCuff: true
+            },
+            redondo_mayor: {
+                name: "Redondo Mayor",
+                group: "Músculo del Hombro",
+                origen: "Parte baja del borde lateral y ángulo inferior de la escápula.",
+                insercion: "Cresta del tubérculo menor (corredera bicipital) del húmero.",
+                inervacion: "Nervio subescapular inferior.",
+                funcion: "Poderoso aductor, rotador medial y extensor del brazo.",
+                clinica: "Palpable en el pliegue posterior de la axila al aducir contra resistencia.",
+                isRotatorCuff: false
+            },
+            deltoides: {
+                name: "Deltoides",
+                group: "Músculo del Hombro",
+                origen: "Tercio lateral de la clavícula, acromion y espina de la escápula.",
+                insercion: "Tuberosidad deltoidea del húmero.",
+                inervacion: "Nervio axilar (C5, C6).",
+                funcion: "Abducción del brazo (porción media). La porción anterior flexiona y rota medialmente; la posterior extiende y rota lateralmente.",
+                clinica: "Da la forma redondeada al hombro; su parálisis aplanará el contorno del hombro.",
+                isRotatorCuff: false
+            },
+            trapecio: {
+                name: "Trapecio",
+                group: "Axioescapular",
+                origen: "Protuberancia occipital externa, línea nucal superior, apófisis espinosas C7-T12.",
+                insercion: "Tercio lateral de clavícula, acromion y espina de la escápula.",
+                inervacion: "Nervio accesorio (XI par craneal) y ramos C3-C4.",
+                funcion: "Fibras superiores elevan la escápula, medias retraen e inferiores deprimen.",
+                clinica: "Lesión del nervio accesorio causa hombro caído y dificultad para elevar el brazo.",
+                isRotatorCuff: false
+            },
+            elevador_escapula: {
+                name: "Elevador de la Escápula",
+                group: "Axioescapular",
+                origen: "Apófisis transversas de C1-C4.",
+                insercion: "Borde medial superior de la escápula (desde ángulo superior a la raíz de la espina).",
+                inervacion: "Nervio dorsal de la escápula (C5) y C3-C4.",
+                funcion: "Eleva la escápula e inclina lateralmente el cuello.",
+                clinica: "Frecuente punto de tensión y dolor cervical por malas posturas sostenidas.",
+                isRotatorCuff: false
+            },
+            dorsal_ancho: {
+                name: "Dorsal Ancho",
+                group: "Axiohumeral",
+                origen: "Apófisis espinosas T7-T12, fascia toracolumbar, cresta ilíaca y costillas inferiores.",
+                insercion: "Suelo del surco intertubercular (corredera bicipital) del húmero.",
+                inervacion: "Nervio toracodorsal (C6-C8).",
+                funcion: "Extensión, aducción y rotación medial del brazo (tracción al trepar o nadar).",
+                clinica: "Músculo de gran extensión utilizado frecuentemente como colgajo en reconstrucciones.",
+                isRotatorCuff: false
+            },
+            romboides: {
+                name: "Romboides (Mayor y Menor)",
+                group: "Axioescapular",
+                origen: "Romboides menor: C7-T1. Romboides mayor: T2-T5.",
+                insercion: "Borde medial de la escápula desde la raíz de la espina hasta el ángulo inferior.",
+                inervacion: "Nervio dorsal de la escápula (C4-C5).",
+                funcion: "Retraen, fijan y elevan la escápula contra el tórax.",
+                clinica: "Su debilidad genera menor control escapular y dolor interescapular.",
+                isRotatorCuff: false
+            }
+        };
+
+        // ACCIDENTES ÓSEOS DETALLADOS
+        const BONE_DATA = {
+            fosa_main: {
+                title: "Fosas Escapulares (Supra, Infra y Subescapular)",
+                desc: "La escápula presenta amplias fosas donde se originan tres de los músculos del manguito rotador. La fosa subescapular ocupa la cara anterior/costal, mientras que las fosas supra e infraespinosa se ubican en la cara posterior separadas por la espina escapular.",
+                clinical: "Servir de amplia superficie ósea para la masa muscular que abraza y estabiliza el hombro.",
+                muscles: "Músculos Supraespinoso, Infraespinoso y Subescapular."
+            },
+            tubercle_greater: {
+                title: "Tubérculo Mayor del Húmero (Troquíter)",
+                desc: "Prominencia ósea situada lateralmente en la extremidad proximal del húmero. Posee tres carillas de inserción para los músculos posteriores y superiores del manguito rotador.",
+                clinical: "Lugar clave donde convergen los tendones del manguito de los rotadores.",
+                muscles: "Supraespinoso (carilla superior), Infraespinoso (media) y Redondo Menor (inferior)."
+            },
+            tubercle_lesser: {
+                title: "Tubérculo Menor del Húmero (Troquín)",
+                desc: "Proyección anterior en el húmero proximal, separada del tubérculo mayor por el surco intertubercular.",
+                clinical: "Proporciona la inserción anterior de soporte para la cabeza humeral.",
+                muscles: "Músculo Subescapular."
+            },
+            acromion: {
+                title: "Acromion y Proceso Coracoides",
+                desc: "El acromion es la continuación lateral de la espina de la escápula que se articula con la clavícula. El proceso coracoides se proyecta en sentido anterior formando el 'arco coracoacromial'.",
+                clinical: "Espacio estrecho por el cual discurre el tendón del supraespinoso protegida por la bursa subacromial.",
+                muscles: "Deltoides, Trapecio y ligamentos coracoacromiales."
+            },
+            bicipital_groove: {
+                title: "Surco Intertubercular (Corredera Bicipital)",
+                desc: "Canal vertical entre los tubérculos mayor y menor del húmero.",
+                clinical: "Por este surco discurre el tendón de la cabeza larga del bíceps braquial.",
+                muscles: "Redondo Mayor (cresta medial), Dorsal Ancho (suelo) y Pectoral Mayor (cresta lateral)."
+            },
+            supra_glenoid: {
+                title: "Tubérculo Supraglenoideo",
+                desc: "Pequeña rugosidad ósea situada justo por encima de la cavidad glenoidea de la escápula.",
+                clinical: "Punto de origen profundo indispensable para el tendón articular del brazo.",
+                muscles: "Origen del tendón de la cabeza larga del bíceps braquial."
+            },
+            infra_glenoid: {
+                title: "Tubérculo Infraglenoideo",
+                desc: "Prominencia situada por debajo de la cavidad glenoidea de la escápula.",
+                clinical: "Actúa previniendo el desplazamiento inferior de la cabeza del húmero junto con el manguito.",
+                muscles: "Origen del tendón de la cabeza larga del tríceps braquial."
+            },
+            deltoid_tub: {
+                title: "Tuberosidad Deltoidea del Húmero",
+                desc: "Zona rugosa en forma de 'V' ubicada en la cara lateral del cuerpo del húmero.",
+                clinical: "Punto de palanca principal para la abducción potente del brazo.",
+                muscles: "Inserción distal del Músculo Deltoides."
+            }
+        };
+
+        // PREGUNTAS DE CASOS CLÍNICOS & TRIVIA
+        const QUIZ_DATA = [
+            {
+                category: "Caso Clínico 1: Manguito Rotador",
+                question: "Paciente acude a consulta tras sufrir una caída. Presenta dolor intenso al iniciar la abducción del brazo en los primeros 15 grados, pero una vez superado este ángulo, el deltoides logra continuar el movimiento. ¿Cuál es el músculo lesionado?",
+                options: [
+                    { text: "Músculo Infraespinoso", correct: false },
+                    { text: "Músculo Supraespinoso", correct: true },
+                    { text: "Músculo Redondo Mayor", correct: false },
+                    { text: "Músculo Subescapular", correct: false }
+                ],
+                explanation: "¡Correcto! Como especifica la presentación, el músculo SUPRAESPINOSO es el encargado principal de INICIAR la abducción del brazo (0-15°), para luego trabajar de manera cooperativa con el deltoides."
+            },
+            {
+                category: "Caso Clínico 2: Lesión Nerviosa",
+                question: "Durante una evaluación física, el médico observa un 'hombro caído' y debilidad evidente cuando el paciente intenta encoger los hombros. ¿Qué nervio se encuentra probablemente comprometido?",
+                options: [
+                    { text: "Nervio Axilar", correct: false },
+                    { text: "Nervio Supraescapular", correct: false },
+                    { text: "Nervio Accesorio (XI Par Craneal)", correct: true },
+                    { text: "Nervio Toracodorsal", correct: false }
+                ],
+                explanation: "¡Excelente diagnóstico! El nervio ACCESORIO (XI) inerva al músculo Trapecio. Su lesión provoca la caída del hombro y la incapacidad para encogerlo o elevar la escápula."
+            },
+            {
+                category: "Caso Clínico 3: Exploración Física",
+                question: "Se solicita evaluar la función del músculo Infraespinoso en un atleta. ¿Cuál es la maniobra de exploración física correcta según las guías anatómicas del curso?",
+                options: [
+                    { text: "Aducir el brazo y palpar el pliegue posterior de la axila.", correct: false },
+                    { text: "Flexionar el codo a 90°, aducir el brazo y solicitar rotación lateral contra resistencia.", correct: true },
+                    { text: "Realizar una abducción rápida de 180° sostenida.", correct: false },
+                    { text: "Inclinar el cuello lateralmente con la escápula fija.", correct: false }
+                ],
+                explanation: "¡Muy bien! Para explorar el infraespinoso, el sujeto debe flexionar el codo, aducir el brazo y rotarlo lateralmente contra resistencia, permitiendo su palpación bajo la espina escapular."
+            },
+            {
+                category: "Anatomía de Tendones Profundos",
+                question: "Además de los 4 músculos del manguito de los rotadores, ¿qué tendón largo se origina en el tubérculo supraglenoideo para ayudar a estabilizar la cabeza del húmero?",
+                options: [
+                    { text: "Tendón de la cabeza larga del bíceps braquial", correct: true },
+                    { text: "Tendón de la cabeza larga del tríceps braquial", correct: false },
+                    { text: "Tendón del coracobraquial", correct: false },
+                    { text: "Tendón del deltoides anterior", correct: false }
+                ],
+                explanation: "¡Correcto! La presentación destaca que antes de examinar los músculos del hombro, destacan dos tendones profundos: la cabeza larga del bíceps (tubérculo supraglenoideo) y la del tríceps (tubérculo infraglenoideo)."
+            }
+        ];
+
+        // ================= ESTADO DE LA APLICACIÓN =================
+        let currentSimMuscleKey = null;
+        let simScore = 0;
+        let simTotal = 0;
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+
+        // ================= INICIALIZACIÓN =================
+        window.onload = function() {
+            initAtlasTable();
+            initSimPalette();
+            nextMuscleChallenge();
+            loadQuizQuestion(0);
+        };
+
+        // NAVEGACIÓN ENTRE PESTAÑAS
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-udg-gold', 'text-udg-darkBrown', 'shadow-md', 'font-semibold');
+                btn.classList.add('hover:bg-white/10', 'text-amber-100');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabId);
+            activeBtn.classList.add('bg-udg-gold', 'text-udg-darkBrown', 'shadow-md', 'font-semibold');
+            activeBtn.classList.remove('hover:bg-white/10', 'text-amber-100');
+        }
+
+        // ================= LÓGICA MÓDULO 1: VISTAS Y BONE INFO =================
+        function setBoneView(view) {
+            const indicator = document.getElementById('view-indicator');
+            const btnAnt = document.getElementById('btn-view-ant');
+            const btnPost = document.getElementById('btn-view-post');
+
+            if(view === 'posterior') {
+                indicator.innerHTML = '<i class="fa-solid fa-eye text-udg-gold mr-1"></i> Vista Posterior (Escápula & Fosa Infraespinosa)';
+                btnPost.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-udg-brown text-white shadow-sm transition';
+                btnAnt.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-udg-beige text-udg-darkBrown border border-udg-gold/40 transition';
+                // Cambios sutiles de color para simular espina posterior
+                document.getElementById('path-scapula-body').setAttribute('fill', '#DBCBB0');
+            } else {
+                indicator.innerHTML = '<i class="fa-solid fa-eye text-udg-gold mr-1"></i> Vista Anterior (Derecha)';
+                btnAnt.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-udg-brown text-white shadow-sm transition';
+                btnPost.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-udg-beige text-udg-darkBrown border border-udg-gold/40 transition';
+                document.getElementById('path-scapula-body').setAttribute('fill', 'url(#boneGrad)');
+            }
+        }
+
+        function showBoneInfo(key) {
+            const data = BONE_DATA[key];
+            if(!data) return;
+
+            document.getElementById('bone-title').innerText = data.title;
+            document.getElementById('bone-desc').innerText = data.desc;
+            document.getElementById('bone-clinical').innerText = data.clinical;
+            document.getElementById('bone-muscles').innerText = data.muscles;
+            document.getElementById('bone-highlights').classList.remove('hidden');
+        }
+
+        // ================= LÓGICA MÓDULO 2: SIMULADOR DE INSERCIÓN =================
+        function initSimPalette() {
+            const palette = document.getElementById('muscle-palette');
+            palette.innerHTML = '';
+
+            Object.keys(MUSCLE_DATA).forEach(key => {
+                const m = MUSCLE_DATA[key];
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3 rounded-xl bg-udg-beige/50 border border-udg-gold/30 hover:bg-udg-gold hover:text-white transition text-xs font-medium flex items-center justify-between group shadow-xs";
+                btn.onclick = () => userSelectMuscleFromPalette(key);
+                btn.innerHTML = `
+                    <span class="font-semibold">${m.name}</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-white/80 group-hover:bg-white group-hover:text-udg-darkBrown text-gray-600 font-normal">
+                        ${m.group}
+                    </span>
+                `;
+                palette.appendChild(btn);
+            });
+        }
+
+        function nextMuscleChallenge() {
+            const keys = Object.keys(MUSCLE_DATA);
+            currentSimMuscleKey = keys[Math.floor(Math.random() * keys.length)];
+            const target = MUSCLE_DATA[currentSimMuscleKey];
+
+            document.getElementById('target-muscle-name').innerText = target.name;
+            closeFeedbackModal();
+
+            // Limpiar resaltados en el SVG
+            document.querySelectorAll('.muscle-target').forEach(el => {
+                el.classList.remove('active');
+            });
+        }
+
+        function userSelectMuscle(selectedKey) {
+            evaluateAnswer(selectedKey);
+        }
+
+        function userSelectMuscleFromPalette(selectedKey) {
+            evaluateAnswer(selectedKey);
+        }
+
+        function evaluateAnswer(selectedKey) {
+            simTotal++;
+            const target = MUSCLE_DATA[currentSimMuscleKey];
+            const selected = MUSCLE_DATA[selectedKey];
+            const isCorrect = (selectedKey === currentSimMuscleKey) || 
+                              (currentSimMuscleKey === 'romboides' && selectedKey === 'romboides');
+
+            const modal = document.getElementById('sim-feedback-modal');
+            const badge = document.getElementById('feedback-status-badge');
+            const title = document.getElementById('feedback-title');
+            const body = document.getElementById('feedback-body');
+
+            if(isCorrect) {
+                simScore += 10;
+                badge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-300";
+                badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> ¡Excelente! Inserción Correcta';
+                
+                title.innerText = target.name;
+                body.innerText = `Has ubicado correctamente la región anatómica del músculo ${target.name}.`;
+
+                // Resaltar músculo en SVG
+                const svgTarget = document.getElementById(`sim-m-${currentSimMuscleKey}`);
+                if(svgTarget) svgTarget.classList.add('active');
+
+            } else {
+                badge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-300";
+                badge.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Inserción Incorrecta';
+
+                title.innerText = `Análisis Anatómico: ${selected.name} vs ${target.name}`;
+                body.innerHTML = `
+                    Seleccionaste <strong>${selected.name}</strong>, el cual se ubica en <em>${selected.origen}</em> y se inserta en <em>${selected.insercion}</em>.<br><br>
+                    Sin embargo, se solicitó el <strong>${target.name}</strong>, cuyo origen real es en <em>${target.origen}</em> con inserción en <em>${target.insercion}</em>.
+                `;
+            }
+
+            // Llenar detalles del músculo solicitado
+            document.getElementById('fb-origen').innerText = target.origen;
+            document.getElementById('fb-insercion').innerText = target.insercion;
+            document.getElementById('fb-inervacion').innerText = target.inervacion;
+            document.getElementById('fb-funcion').innerText = target.funcion;
+
+            document.getElementById('sim-score').innerText = `${simScore} / ${simTotal * 10} pts`;
+            modal.classList.remove('hidden');
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('sim-feedback-modal').classList.add('hidden');
+        }
+
+        // ================= LÓGICA MÓDULO 3: TRIVIA CLÍNICA =================
+        function loadQuizQuestion(index) {
+            currentQuizIndex = index;
+            const q = QUIZ_DATA[index];
+
+            document.getElementById('quiz-category').innerText = q.category;
+            document.getElementById('quiz-question').innerText = q.question;
+            
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+
+            const explanationDiv = document.getElementById('quiz-explanation');
+            explanationDiv.classList.add('hidden');
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3.5 rounded-xl bg-white border border-udg-gold/30 hover:border-udg-gold hover:bg-udg-beige/30 transition text-xs sm:text-sm text-udg-darkBrown flex items-center justify-between shadow-xs";
+                btn.onclick = () => answerQuiz(idx);
+                btn.innerHTML = `
+                    <span>${opt.text}</span>
+                    <i class="fa-regular fa-circle text-gray-300"></i>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('quiz-total').innerText = QUIZ_DATA.length;
+        }
+
+        function answerQuiz(optionIdx) {
+            const q = QUIZ_DATA[currentQuizIndex];
+            const isCorrect = q.options[optionIdx].correct;
+            const explanationDiv = document.getElementById('quiz-explanation');
+
+            if(isCorrect) {
+                quizScore++;
+                explanationDiv.className = "p-4 rounded-xl bg-green-50 border border-green-200 text-green-900 text-xs sm:text-sm leading-relaxed animate-fade-in";
+                explanationDiv.innerHTML = `<strong><i class="fa-solid fa-circle-check"></i> ¡Respuesta Correcta!</strong><br>${q.explanation}`;
+            } else {
+                explanationDiv.className = "p-4 rounded-xl bg-red-50 border border-red-200 text-red-900 text-xs sm:text-sm leading-relaxed animate-fade-in";
+                explanationDiv.innerHTML = `<strong><i class="fa-solid fa-triangle-exclamation"></i> Diagnóstico Incorrecto:</strong><br>${q.explanation}`;
+            }
+
+            explanationDiv.classList.remove('hidden');
+            document.getElementById('quiz-score').innerText = quizScore;
+        }
+
+        function loadNextQuizQuestion() {
+            const nextIdx = (currentQuizIndex + 1) % QUIZ_DATA.length;
+            loadQuizQuestion(nextIdx);
+        }
+
+        // ================= LÓGICA MÓDULO 4: ATLAS & TABLA =================
+        function initAtlasTable() {
+            const tbody = document.getElementById('atlas-tbody');
+            tbody.innerHTML = '';
+
+            Object.keys(MUSCLE_DATA).forEach(key => {
+                const m = MUSCLE_DATA[key];
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-udg-beige/20 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-udg-darkBrown border-b border-gray-100">
+                        ${m.name}
+                        ${m.isRotatorCuff ? '<span class="block text-[9px] text-udg-gold font-semibold uppercase">Manguito Rotador</span>' : ''}
+                    </td>
+                    <td class="p-3 text-gray-700 border-b border-gray-100">${m.origen}</td>
+                    <td class="p-3 text-gray-700 border-b border-gray-100">${m.insercion}</td>
+                    <td class="p-3 text-udg-brown font-semibold border-b border-gray-100">${m.inervacion}</td>
+                    <td class="p-3 text-gray-700 border-b border-gray-100">${m.funcion}</td>
+                    <td class="p-3 text-gray-500 italic border-b border-gray-100">${m.clinica}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterAtlasTable() {
+            const query = document.getElementById('atlas-search').value.toLowerCase();
+            const rows = document.querySelectorAll('#atlas-tbody tr');
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                if(text.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
