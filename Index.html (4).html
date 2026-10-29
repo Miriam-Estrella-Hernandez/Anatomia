@@ -527,106 +527,196 @@
     <!-- SCRIPT DE LÓGICA Y DATOS DE LA APLICACIÓN -->
     <script>
         // ================= BASE DE DATOS ANATÓMICA COMPLETA DE LA PRESENTACIÓN =================
-        const MUSCLE_DATA = {
-            supraespinoso: {
-                name: "Supraespinoso",
+ const MUSCLE_DATA = {
+            subescapular: {
+                name: "Músculo Subescapular",
                 group: "Manguito Rotador",
-                origen: "Ocupa toda la fosa supraespinosa de la escápula.",
-                insercion: "Tubérculo mayor (tuberosidad mayor) del húmero.",
-                inervacion: "Nervio supraescapular.",
-                funcion: "Inicia la abducción del brazo (primeros 15°). Trabaja en conjunto con el deltoides.",
-                clinica: "Su tendón pasa bajo el acromion protegido por la bolsa subacromial; propenso a pinzamiento y tendinitis.",
-                isRotatorCuff: true
+                isRotatorCuff: true,
+                origen: "Fosa subescapular, cara costal de la escápula",
+                insercion: "Tubérculo menor del húmero y cápsula articular adyacente",
+                inervacion: "Nervios subescapulares superior e inferior (C5–C7)",
+                funcion: "Rotación medial; ayuda a la aducción; estabiliza la cabeza humeral",
+                clinica: "Tendinopatía o desgarro: dolor anterior y debilidad en rotación interna. Pruebas: lift-off y belly-press."
+            },
+            supraespinoso: {
+                name: "Músculo Supraespinoso",
+                group: "Manguito Rotador",
+                isRotatorCuff: true,
+                origen: "Fosa supraespinosa",
+                insercion: "Faceta superior del tubérculo mayor",
+                inervacion: "Nervio supraescapular (C5–C6)",
+                funcion: "Inicia la abducción, especialmente los primeros 15°; estabiliza la articulación",
+                clinica: "Tendinopatía/desgarro frecuente; dolor al elevar el brazo y posible pinzamiento subacromial."
             },
             infraespinoso: {
-                name: "Infraespinoso",
+                name: "Músculo Infraespinoso",
                 group: "Manguito Rotador",
-                origen: "Ocupa la mayor parte de la fosa infraespinosa de la escápula.",
-                insercion: "Carilla media del tubérculo mayor del húmero.",
-                inervacion: "Nervio supraescapular.",
-                funcion: "Potente rotador lateral (externo) del brazo y estabilizador del hombro.",
-                clinica: "Se explora flexionando el codo a 90° y realizando rotación lateral contra resistencia.",
-                isRotatorCuff: true
+                isRotatorCuff: true,
+                origen: "Fosa infraespinosa",
+                insercion: "Faceta media del tubérculo mayor",
+                inervacion: "Nervio supraescapular (C5–C6)",
+                funcion: "Rotación lateral y estabilización posterior",
+                clinica: "Lesión: dolor posterior y debilidad de rotación externa, común en deportes de lanzamiento."
             },
             redondo_menor: {
-                name: "Redondo Menor",
+                name: "Músculo Redondo Menor",
                 group: "Manguito Rotador",
-                origen: "Parte posterior del borde lateral de la escápula.",
-                insercion: "Carilla inferior del tubérculo mayor del húmero.",
-                inervacion: "Nervio axilar.",
-                funcion: "Rotación lateral (externa) del brazo y aducción secundaria.",
-                clinica: "Músculo estrecho oculto por el deltoides; se diferencia del infraespinoso por su inervación axilar.",
-                isRotatorCuff: true
-            },
-            subescapular: {
-                name: "Subescapular",
-                group: "Manguito Rotador",
-                origen: "Fosa subescapular (cara costal de la escápula).",
-                insercion: "Tubérculo menor del húmero.",
-                inervacion: "Nervios subescapulares superior e inferior.",
-                funcion: "Principal rotador medial (interno) del brazo y aductor.",
-                clinica: "Forma la pared posterior de la axila y cruza la cara anterior de la articulación.",
-                isRotatorCuff: true
+                isRotatorCuff: true,
+                origen: "Porción superior del borde lateral de la escápula",
+                insercion: "Faceta inferior del tubérculo mayor",
+                inervacion: "Nervio axilar (C5–C6)",
+                funcion: "Rotación lateral; ayuda a la aducción y estabiliza el hombro",
+                clinica: "Puede afectarse en lesiones del manguito o del nervio axilar; se evalúa la rotación externa."
             },
             redondo_mayor: {
-                name: "Redondo Mayor",
-                group: "Músculo del Hombro",
-                origen: "Parte baja del borde lateral y ángulo inferior de la escápula.",
-                insercion: "Cresta del tubérculo menor (corredera bicipital) del húmero.",
-                inervacion: "Nervio subescapular inferior.",
-                funcion: "Poderoso aductor, rotador medial y extensor del brazo.",
-                clinica: "Palpable en el pliegue posterior de la axila al aducir contra resistencia.",
-                isRotatorCuff: false
+                name: "Músculo Redondo Mayor",
+                group: "Intrínseco",
+                isRotatorCuff: false,
+                origen: "Cara posterior del ángulo inferior y región inferior del borde lateral de la escápula",
+                insercion: "Labio medial del surco intertubercular (cresta del tubérculo menor)",
+                inervacion: "Nervio subescapular inferior (C5–C6)",
+                funcion: "Aducción, extensión y rotación medial del brazo",
+                clinica: "Sobrecarga en natación, lanzamiento o fuerza; diferenciarlo del redondo menor."
             },
             deltoides: {
-                name: "Deltoides",
-                group: "Músculo del Hombro",
-                origen: "Tercio lateral de la clavícula, acromion y espina de la escápula.",
-                insercion: "Tuberosidad deltoidea del húmero.",
-                inervacion: "Nervio axilar (C5, C6).",
-                funcion: "Abducción del brazo (porción media). La porción anterior flexiona y rota medialmente; la posterior extiende y rota lateralmente.",
-                clinica: "Da la forma redondeada al hombro; su parálisis aplanará el contorno del hombro.",
-                isRotatorCuff: false
+                name: "Músculo Deltoides",
+                group: "Intrínseco Superficial",
+                isRotatorCuff: false,
+                origen: "Tercio lateral de clavícula, acromion y espina de escápula",
+                insercion: "Tuberosidad deltoidea del húmero",
+                inervacion: "Nervio axilar (C5–C6)",
+                funcion: "Porción media: abducción; anterior: flexión y rotación medial; posterior: extensión y rotación lateral",
+                clinica: "Lesión del nervio axilar en luxación o fractura del cuello quirúrgico: debilidad abductora y pérdida del contorno del hombro."
             },
             trapecio: {
-                name: "Trapecio",
-                group: "Axioescapular",
-                origen: "Protuberancia occipital externa, línea nucal superior, apófisis espinosas C7-T12.",
-                insercion: "Tercio lateral de clavícula, acromion y espina de la escápula.",
-                inervacion: "Nervio accesorio (XI par craneal) y ramos C3-C4.",
-                funcion: "Fibras superiores elevan la escápula, medias retraen e inferiores deprimen.",
-                clinica: "Lesión del nervio accesorio causa hombro caído y dificultad para elevar el brazo.",
-                isRotatorCuff: false
+                name: "Músculo Trapecio",
+                group: "Extrínseco Axioescapular",
+                isRotatorCuff: false,
+                origen: "Protuberancia occipital externa, línea nucal superior medial, ligamento nucal y apófisis espinosas C7–T12",
+                insercion: "Tercio lateral de clavícula, acromion y espina de escápula",
+                inervacion: "Nervio accesorio (XI); propiocepción C3–C4",
+                funcion: "Fibras superiores elevan; medias retraen; inferiores deprimen; superiores e inferiores rotan hacia arriba la escápula",
+                clinica: "Lesión del accesorio: hombro caído, debilidad al encogerlo y dificultad para elevar el brazo."
             },
             elevador_escapula: {
-                name: "Elevador de la Escápula",
-                group: "Axioescapular",
-                origen: "Apófisis transversas de C1-C4.",
-                insercion: "Borde medial superior de la escápula (desde ángulo superior a la raíz de la espina).",
-                inervacion: "Nervio dorsal de la escápula (C5) y C3-C4.",
-                funcion: "Eleva la escápula e inclina lateralmente el cuello.",
-                clinica: "Frecuente punto de tensión y dolor cervical por malas posturas sostenidas.",
-                isRotatorCuff: false
+                name: "Músculo Elevador de la Escápula",
+                group: "Extrínseco Axioescapular",
+                isRotatorCuff: false,
+                origen: "Tubérculos posteriores de apófisis transversas C1–C4",
+                insercion: "Borde medial desde el ángulo superior hasta la raíz de la espina",
+                inervacion: "Nervio dorsal de la escápula (principalmente C5) y ramos C3–C4",
+                funcion: "Eleva la escápula y contribuye a la rotación inferior; inclina lateralmente el cuello con escápula fija",
+                clinica: "Tensión y dolor cervical asociados a postura sostenida."
+            },
+            romboides_menor: {
+                name: "Músculo Romboides Menor",
+                group: "Extrínseco Axioescapular",
+                isRotatorCuff: false,
+                origen: "Ligamento nucal y apófisis espinosas C7–T1",
+                insercion: "Borde medial a nivel de la raíz de la espina",
+                inervacion: "Nervio dorsal de la escápula (principalmente C4–C5)",
+                funcion: "Retracción, elevación y rotación inferior de la escápula",
+                clinica: "Debilidad: menor control escapular y molestias interescapulares."
+            },
+            romboides_mayor: {
+                name: "Músculo Romboides Mayor",
+                group: "Extrínseco Axioescapular",
+                isRotatorCuff: false,
+                origen: "Apófisis espinosas T2–T5 y ligamentos supraespinosos relacionados",
+                insercion: "Borde medial desde la espina hacia el ángulo inferior",
+                inervacion: "Nervio dorsal de la escápula (C4–C5, con predominio C5)",
+                funcion: "Retrae y fija la escápula contra el tórax; ayuda a elevarla y rotarla inferiormente",
+                clinica: "Alteración: dolor interescapular y menor control durante movimientos repetitivos."
+            },
+            serrato_anterior: {
+                name: "Músculo Serrato Anterior",
+                group: "Extrínseco Axioescapular",
+                isRotatorCuff: false,
+                origen: "Caras externas de las primeras 8–9 costillas",
+                insercion: "Cara anterior del borde medial de escápula, incluido el ángulo inferior",
+                inervacion: "Nervio torácico largo (C5–C7)",
+                funcion: "Protracción; fija la escápula al tórax y la rota hacia arriba",
+                clinica: "Lesión del nervio torácico largo: escápula alada y dificultad para elevar el brazo."
+            },
+            pectoral_menor: {
+                name: "Músculo Pectoral Menor",
+                group: "Extrínseco Axioescapular",
+                isRotatorCuff: false,
+                origen: "Caras anteriores de costillas 3–5 cerca de sus cartílagos",
+                insercion: "Borde medial y cara superior del proceso coracoides",
+                inervacion: "Nervio pectoral medial (C8–T1)",
+                funcion: "Protracción y descenso escapular; puede ayudar en inspiración forzada",
+                clinica: "Acortamiento altera la mecánica escapular; relación clínica con algunos cuadros de compresión neurovascular."
+            },
+            subclavio: {
+                name: "Músculo Subclavio",
+                group: "Extrínseco Estabilizador",
+                isRotatorCuff: false,
+                origen: "Unión de primera costilla con cartílago costal",
+                insercion: "Surco del subclavio en la cara inferior del tercio medio clavicular",
+                inervacion: "Nervio del subclavio (C5–C6)",
+                funcion: "Desciende y estabiliza la clavícula",
+                clinica: "Relación anatómica con vasos subclavios y plexo braquial; contribuye a estabilizar la articulación esternoclavicular."
+            },
+            pectoral_mayor: {
+                name: "Músculo Pectoral Mayor",
+                group: "Extrínseco Axiohumeral",
+                isRotatorCuff: false,
+                origen: "Mitad medial clavicular, esternón, cartílagos de las primeras seis costillas y aponeurosis del oblicuo externo",
+                insercion: "Labio lateral del surco intertubercular (cresta del tubérculo mayor)",
+                inervacion: "Nervios pectorales lateral y medial (aprox. C5–T1)",
+                funcion: "Aducción y rotación medial; porción clavicular flexiona; esternocostal extiende desde flexión",
+                clinica: "Desgarro en press de banca: dolor, hematoma y alteración del contorno anterior de la axila."
             },
             dorsal_ancho: {
-                name: "Dorsal Ancho",
-                group: "Axiohumeral",
-                origen: "Apófisis espinosas T7-T12, fascia toracolumbar, cresta ilíaca y costillas inferiores.",
-                insercion: "Suelo del surco intertubercular (corredera bicipital) del húmero.",
-                inervacion: "Nervio toracodorsal (C6-C8).",
-                funcion: "Extensión, aducción y rotación medial del brazo (tracción al trepar o nadar).",
-                clinica: "Músculo de gran extensión utilizado frecuentemente como colgajo en reconstrucciones.",
-                isRotatorCuff: false
+                name: "Músculo Dorsal Ancho",
+                group: "Extrínseco Axiohumeral",
+                isRotatorCuff: false,
+                origen: "Apófisis espinosas T7–T12, fascia toracolumbar, cresta ilíaca y costillas inferiores; a veces ángulo inferior escapular",
+                insercion: "Suelo del surco intertubercular del húmero",
+                inervacion: "Nervio toracodorsal (C6–C8)",
+                funcion: "Extensión, aducción y rotación medial; tracción al trepar y nadar",
+                clinica: "Lesión del nervio toracodorsal debilita tracción; se usa como colgajo en reconstrucción."
             },
-            romboides: {
-                name: "Romboides (Mayor y Menor)",
-                group: "Axioescapular",
-                origen: "Romboides menor: C7-T1. Romboides mayor: T2-T5.",
-                insercion: "Borde medial de la escápula desde la raíz de la espina hasta el ángulo inferior.",
-                inervacion: "Nervio dorsal de la escápula (C4-C5).",
-                funcion: "Retraen, fijan y elevan la escápula contra el tórax.",
-                clinica: "Su debilidad genera menor control escapular y dolor interescapular.",
-                isRotatorCuff: false
+            coracobraquial: {
+                name: "Músculo Coracobraquial",
+                group: "Brazo / Hombro",
+                isRotatorCuff: false,
+                origen: "Vértice del proceso coracoides, junto con cabeza corta del bíceps",
+                insercion: "Tercio medio de la cara medial del húmero",
+                inervacion: "Nervio musculocutáneo (C5–C7)",
+                funcion: "Flexión y aducción del brazo; estabilización glenohumeral",
+                clinica: "Importante por su relación con el nervio musculocutáneo; dolor con flexión/aducción resistida."
+            },
+            omohioideo: {
+                name: "Músculo Omohioideo",
+                group: "Infrahioideo Cervical",
+                isRotatorCuff: false,
+                origen: "Borde superior de escápula cerca de la escotadura supraescapular",
+                insercion: "Cuerpo del hioides por medio del vientre superior",
+                inervacion: "Asa cervical (C1–C3)",
+                funcion: "Deprime y estabiliza el hioides y la laringe durante deglución y habla",
+                clinica: "Referencia anatómica en cirugía cervical; importante distinguir su inserción hioidea."
+            },
+            biceps_larga: {
+                name: "Bíceps Braquial (Cabeza Larga)",
+                group: "Brazo / Hombro",
+                isRotatorCuff: false,
+                origen: "Tubérculo supraglenoideo y región superior del labrum glenoideo",
+                insercion: "Tuberosidad del radio y aponeurosis bicipital",
+                inervacion: "Nervio musculocutáneo (C5–C6)",
+                funcion: "Flexión del codo y supinación; ayuda a la estabilidad del hombro",
+                clinica: "Tendinopatía: dolor anterior del hombro; el tendón discurre por el surco intertubercular."
+            },
+            triceps_larga: {
+                name: "Tríceps Braquial (Cabeza Larga)",
+                group: "Brazo / Hombro",
+                isRotatorCuff: false,
+                origen: "Tubérculo infraglenoideo de la escápula",
+                insercion: "Olécranon y fascia del antebrazo",
+                inervacion: "Nervio radial (C6–C8)",
+                funcion: "Extiende el codo; ayuda a extender y aducir el brazo",
+                clinica: "Puede lesionarse por sobrecarga de empuje; contribuye a la estabilidad posterior del hombro."
             }
         };
 
